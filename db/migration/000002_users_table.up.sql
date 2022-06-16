@@ -13,8 +13,4 @@ CREATE TABLE users
     deleted_at timestamp
 );
 
-CREATE INDEX users_username_idx ON users (username);
-
-CREATE INDEX users_email_idx ON users (email);
-
 CREATE INDEX users_role_id_idx ON users (role_id);

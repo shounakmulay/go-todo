@@ -1,11 +1,7 @@
 package main
 
+import "go-todo/internal/util/log"
+
 func main() {
-
+	log.InitLogger()
 }
-
-//
-//config
-//service - connects to db, redis, etc
-//daos
-//routes

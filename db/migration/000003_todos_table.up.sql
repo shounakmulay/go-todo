@@ -1,6 +1,6 @@
 CREATE TABLE todos
 (
-    id          int PRIMARY KEY,
+    id          int PRIMARY KEY AUTO_INCREMENT,
     user_id     int,
     title       text,
     description text,
