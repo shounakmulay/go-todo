@@ -1,10 +1,12 @@
 package error
 
-import "go-todo/internal/util/log"
+import (
+	"go-todo/utl/log"
+)
 
 func Log(e error) {
 	if e != nil {
-		log.Logger.Error(e)
+		log.Logger.Error(e.Error())
 	}
 }
 

@@ -1,27 +1,16 @@
-package main
+package seed
 
 import (
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/joho/godotenv"
-	errorutl "go-todo/internal/util/error"
-	"go-todo/internal/util/log"
 	"go-todo/model/dbmodel"
-	"gorm.io/driver/mysql"
+	errorutl "go-todo/utl/error"
+	"go-todo/utl/log"
 	"gorm.io/gorm"
 	"math/rand"
-	"os"
 	"time"
 )
 
-func main() {
-	log.InitLogger()
-
-	errorutl.Panic(godotenv.Load(".env.develop"))
-	dsn := os.Getenv("SQL_URL")
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	errorutl.Fatal(err)
-
+func SeedDB(db *gorm.DB) {
 	seedRoles(db)
 	seedUsers(db)
 	seedTodos(db)
