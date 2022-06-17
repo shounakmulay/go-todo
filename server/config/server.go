@@ -5,4 +5,6 @@ type Server struct {
 	Debug               bool
 	ReadTimeoutSeconds  int
 	WriteTimeoutSeconds int
+	SkipLogs            bool
+	SkipBodyDump        bool
 }

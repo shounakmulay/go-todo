@@ -2,8 +2,8 @@ package env
 
 import (
 	"fmt"
-	"go-todo/utl/convert"
-	"go-todo/utl/log"
+	"go-todo/internal/convert"
+	"go-todo/internal/log"
 	"os"
 )
 

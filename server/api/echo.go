@@ -3,13 +3,26 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-todo/internal/log"
+	"go-todo/server/config"
 	"go-todo/server/middleware/secure"
 	"net/http"
 )
 
-func NewEcho() *echo.Echo {
+func NewEcho(cfg *config.Configuration) *echo.Echo {
 	e := echo.New()
-	e.Use(middleware.Logger(), middleware.Recover(), secure.CORS(), secure.Headers())
+
+	logSkipper := func(c echo.Context) bool {
+		return cfg.Server.SkipLogs
+	}
+	echoLogger := log.EchoLogger(logSkipper)
+
+	bodyDumpSkipper := func(c echo.Context) bool {
+		return cfg.Server.SkipBodyDump
+	}
+	bodyDumpLogger := log.BodyDumpLogger(bodyDumpSkipper)
+
+	e.Use(bodyDumpLogger, echoLogger, middleware.Recover(), secure.CORS(), secure.Headers())
 	e.GET("/", healthCheck)
 	return e
 }

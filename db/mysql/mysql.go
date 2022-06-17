@@ -1,9 +1,9 @@
 package mysql
 
 import (
+	"go-todo/internal/env"
+	"go-todo/internal/log"
 	"go-todo/server/config"
-	"go-todo/utl/env"
-	"go-todo/utl/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -21,6 +21,7 @@ func Connect(cfg *config.Configuration) (*gorm.DB, error) {
 		},
 	)
 
+	log.Logger.Infof("Connecting to DB at %s", connectionString)
 	return gorm.Open(sqlDialector, &gorm.Config{
 		Logger: gormLogger,
 	})

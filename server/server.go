@@ -4,26 +4,32 @@ import (
 	"context"
 	"github.com/labstack/echo/v4"
 	"go-todo/db/mysql"
+	"go-todo/internal/env"
+	errorutl "go-todo/internal/error"
+	"go-todo/internal/log"
 	"go-todo/server/api"
 	"go-todo/server/config"
-	errorutl "go-todo/utl/error"
-	"go-todo/utl/log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 )
 
-func Start(cfg *config.Configuration) {
+func Start(cfg *config.Configuration) error {
 	db, err := mysql.Connect(cfg)
-	errorutl.Fatal(err)
+	if err != nil {
+		return errorutl.Format("error connecting to MySQL", err)
+	}
 
-	echoServer := api.Start(cfg, db)
+	echoServer, echoError := api.Start(cfg, db)
+	if echoError != nil {
+		return errorutl.Format("error initializing api", echoError)
+	}
 
-	startServer(cfg, echoServer)
+	return startServer(cfg, echoServer)
 }
 
-func startServer(cfg *config.Configuration, echoServer *echo.Echo) {
+func startServer(cfg *config.Configuration, echoServer *echo.Echo) error {
 
 	httpServer := &http.Server{
 		Addr:         cfg.Server.Port,
@@ -35,7 +41,7 @@ func startServer(cfg *config.Configuration, echoServer *echo.Echo) {
 
 	// Start server
 	go func() {
-		log.Logger.Info("Starting server...")
+		log.Logger.Infof("Starting server at %v", env.GetInt("SERVER_PORT"))
 		if err := echoServer.StartServer(httpServer); err != nil {
 			log.Logger.Info("Shutting down the server")
 		}
@@ -49,6 +55,7 @@ func startServer(cfg *config.Configuration, echoServer *echo.Echo) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := echoServer.Shutdown(ctx); err != nil {
-		errorutl.Fatal(err)
+		return errorutl.Format("error gracefully shutting down server", err)
 	}
+	return nil
 }

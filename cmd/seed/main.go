@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"go-todo/db/seed"
-	errorutl "go-todo/utl/error"
-	"go-todo/utl/log"
+	errorutl "go-todo/internal/error"
+	"go-todo/internal/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-	log.InitLogger()
+	loggerError := log.Logger.InitError
+	errorutl.Fatal(loggerError)
 
 	errorutl.Panic(godotenv.Load(".env.local"))
 	dsn := os.Getenv("DB_SQL_URL")
@@ -26,5 +27,5 @@ func main() {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	errorutl.Fatal(err)
 
-	seed.SeedDB(db)
+	seed.DB(db)
 }

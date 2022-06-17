@@ -6,12 +6,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func Start(cfg *config.Configuration, db *gorm.DB) *echo.Echo {
-	e := NewEcho()
+func Start(cfg *config.Configuration, db *gorm.DB) (*echo.Echo, error) {
+	e := NewEcho(cfg)
 
 	// TODO: Add Middlewares
 
 	// TODO: Add routing
 
-	return e
+	return e, nil
 }

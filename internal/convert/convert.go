@@ -1,7 +1,7 @@
 package convert
 
 import (
-	errorutl "go-todo/utl/error"
+	errorutl "go-todo/internal/error"
 	"strconv"
 )
 

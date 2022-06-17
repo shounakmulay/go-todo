@@ -1,7 +1,9 @@
 package error
 
 import (
-	"go-todo/utl/log"
+	"errors"
+	"fmt"
+	"go-todo/internal/log"
 )
 
 func Log(e error) {
@@ -20,4 +22,9 @@ func Fatal(e error) {
 	if e != nil {
 		log.Logger.Fatal(e)
 	}
+}
+
+func Format(msg string, e error) error {
+	errMsg := fmt.Sprintf("%s: %v", msg, e)
+	return errors.New(errMsg)
 }

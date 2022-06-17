@@ -20,6 +20,6 @@ migrate-drop-f:
 	migrate -path db/migration -database "mysql://$(DB_SQL_URL)" -verbose drop -f
 
 seed-db:
-	go run db/seed/main.go
+	go run cmd/seed/main.go
 
 migrate-and-seed: migrate-drop-f migrate-up seed-db

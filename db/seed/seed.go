@@ -2,15 +2,15 @@ package seed
 
 import (
 	"github.com/brianvoe/gofakeit/v6"
+	errorutl "go-todo/internal/error"
+	"go-todo/internal/log"
 	"go-todo/model/dbmodel"
-	errorutl "go-todo/utl/error"
-	"go-todo/utl/log"
 	"gorm.io/gorm"
 	"math/rand"
 	"time"
 )
 
-func SeedDB(db *gorm.DB) {
+func DB(db *gorm.DB) {
 	seedRoles(db)
 	seedUsers(db)
 	seedTodos(db)

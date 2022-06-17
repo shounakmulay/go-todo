@@ -3,15 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	errorutl "go-todo/internal/error"
+	"go-todo/internal/log"
 	"go-todo/server"
 	"go-todo/server/config"
-	errorutl "go-todo/utl/error"
-	"go-todo/utl/log"
 	"os"
 )
 
 func main() {
-	log.InitLogger()
 	const envName = "ENVIRONMENT_NAME"
 	env := os.Getenv(envName)
 
@@ -24,8 +23,12 @@ func main() {
 		godotenv.Load(fmt.Sprintf(".env.%s", env)),
 	)
 
+	loggerError := log.Logger.InitError
+	errorutl.Fatal(loggerError)
+
 	cfg, cfgErr := config.Load()
 	errorutl.Fatal(cfgErr)
 
-	server.Start(cfg)
+	err := server.Start(cfg)
+	errorutl.Fatal(err)
 }
