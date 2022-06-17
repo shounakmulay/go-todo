@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-todo/internal/log"
 )
 
 func EchoLogger(skipper middleware.Skipper) echo.MiddlewareFunc {
@@ -34,7 +35,7 @@ func BodyDumpLogger(skipper middleware.Skipper) echo.MiddlewareFunc {
 			}
 			headers += "]"
 
-			Logger.Infof(
+			log.Logger.Infof(
 				"\n==================================================================\n"+
 					"HEADERS: %s\n"+
 					"REQUEST: %s\n"+

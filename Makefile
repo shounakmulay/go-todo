@@ -23,3 +23,6 @@ seed-db:
 	go run cmd/seed/main.go
 
 migrate-and-seed: migrate-drop-f migrate-up seed-db
+
+local:
+	go run cmd/server/main.go

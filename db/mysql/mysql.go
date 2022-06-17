@@ -18,6 +18,8 @@ func Connect(cfg *config.Configuration) (*gorm.DB, error) {
 		log.NewGormLogger(),
 		logger.Config{
 			SlowThreshold: time.Millisecond * time.Duration(cfg.Database.SlowThreshold),
+			LogLevel:      logger.Info,
+			Colorful:      true,
 		},
 	)
 

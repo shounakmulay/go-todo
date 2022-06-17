@@ -4,7 +4,7 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
-	"go-todo/model/dbmodel"
+	dbmodel2 "go-todo/server/model/dbmodel"
 	"gorm.io/gorm"
 	"math/rand"
 	"time"
@@ -18,7 +18,7 @@ func DB(db *gorm.DB) {
 
 func seedRoles(db *gorm.DB) {
 	log.Logger.Debug("Seeding Roles...")
-	roles := []dbmodel.Role{
+	roles := []dbmodel2.Role{
 		{
 			Name:        "user",
 			AccessLevel: 100,
@@ -38,14 +38,14 @@ func seedRoles(db *gorm.DB) {
 
 func seedUsers(db *gorm.DB) {
 	log.Logger.Debug("Seeding Users...")
-	var roles []dbmodel.Role
+	var roles []dbmodel2.Role
 	result := db.Find(&roles)
 	errorutl.Fatal(result.Error)
 
-	var users []dbmodel.User
+	var users []dbmodel2.User
 	// add users
 	for i := 0; i < 8; i++ {
-		user := dbmodel.User{
+		user := dbmodel2.User{
 			FirstName: gofakeit.FirstName(),
 			LastName:  gofakeit.LastName(),
 			Username:  gofakeit.Username(),
@@ -58,7 +58,7 @@ func seedUsers(db *gorm.DB) {
 	}
 	// add auditors
 	for i := 0; i < 4; i++ {
-		user := dbmodel.User{
+		user := dbmodel2.User{
 			FirstName: gofakeit.FirstName(),
 			LastName:  gofakeit.LastName(),
 			Username:  gofakeit.Username(),
@@ -71,7 +71,7 @@ func seedUsers(db *gorm.DB) {
 	}
 	// add admins
 	for i := 0; i < 3; i++ {
-		user := dbmodel.User{
+		user := dbmodel2.User{
 			FirstName: gofakeit.FirstName(),
 			LastName:  gofakeit.LastName(),
 			Username:  gofakeit.Username(),
@@ -88,15 +88,15 @@ func seedUsers(db *gorm.DB) {
 
 func seedTodos(db *gorm.DB) {
 	log.Logger.Debug("Seeding Todos...")
-	var users []dbmodel.User
-	result := db.Where(&dbmodel.User{RoleId: 1}).Find(&users)
+	var users []dbmodel2.User
+	result := db.Where(&dbmodel2.User{RoleId: 1}).Find(&users)
 	errorutl.Fatal(result.Error)
 
-	var todos []dbmodel.Todo
+	var todos []dbmodel2.Todo
 	for _, u := range users {
 		r := rand.Intn(10)
 		for i := 0; i <= r; i++ {
-			todo := dbmodel.Todo{
+			todo := dbmodel2.Todo{
 				UserID:      u.ID,
 				Title:       gofakeit.Sentence(10),
 				Description: gofakeit.Sentence(100),
