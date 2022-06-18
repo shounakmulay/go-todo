@@ -13,14 +13,31 @@ import (
 func Role(g *echo.Group, controller controller.IRoleController) {
 	role := g.Group("/role")
 
-	role.GET("/:id", func(c echo.Context) error {
-		role := &reqmodel.Role{}
+	role.POST("/", func(c echo.Context) error {
+		role := &reqmodel.CreateRole{}
 		bindValErr := validator.BindAndValidate(c, role)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
 
-		dbRole, err := controller.GetRole(role.ID)
+		dbRoleID, err := controller.CreateRole(*role)
+		if err != nil {
+			return json.Error(c, errorutl.GormToResErr(err, dbRoleID))
+		}
+
+		return json.Success(c, resmodel.RoleID{
+			ID: dbRoleID,
+		})
+	})
+
+	role.GET("/:id", func(c echo.Context) error {
+		role := &reqmodel.FindRole{}
+		bindValErr := validator.BindAndValidate(c, role)
+		if bindValErr != nil {
+			return json.Error(c, bindValErr)
+		}
+
+		dbRole, err := controller.FindRoleByID(role.ID)
 		if err != nil {
 			return json.Error(c, errorutl.GormToResErr(err, role.ID))
 		}

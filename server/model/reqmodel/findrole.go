@@ -1,5 +1,5 @@
 package reqmodel
 
-type Role struct {
+type FindRole struct {
 	ID int `param:"id" validate:"required"`
 }

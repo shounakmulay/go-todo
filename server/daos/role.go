@@ -24,5 +24,5 @@ func (d RoleDao) FindRoleById(id int) (dbmodel.Role, error) {
 
 func (d RoleDao) CreateRole(role dbmodel.Role) (int, error) {
 	result := d.db.Create(&role)
-	return returns.ValueOrError(role.ID, result.Error)
+	return returns.ErrorOrValue(result.Error, role.ID)
 }
