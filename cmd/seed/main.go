@@ -1,27 +1,33 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
 	"go-todo/db/seed"
+	"go-todo/internal/env"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
-	"strings"
 )
 
 func main() {
+	env.Load()
+
 	loggerError := log.Logger.InitError
 	errorutl.Fatal(loggerError)
 
-	errorutl.Panic(godotenv.Load(".env.local"))
 	dsn := os.Getenv("DB_SQL_URL")
 
-	isLocal := strings.Contains(dsn, "localhost") || strings.Contains(dsn, "127.0.0.1")
-	if !isLocal {
-		log.Logger.Fatal("The command is not running on a local db instance. " +
-			"If you are sure you want to run it on a non local instance, you need to disable this check manually")
+	safeEnvs := map[string]bool{
+		"local":  true,
+		"docker": true,
+	}
+
+	environment := env.GetString("ENVIRONMENT_NAME")
+	isSafe, ok := safeEnvs[environment]
+	if !isSafe || !ok {
+		log.Logger.Fatal("The command is not safe to run in this environment. " +
+			"If you are sure you want to run it in this environment, you need to add it to the map of safe environments.")
 	}
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})

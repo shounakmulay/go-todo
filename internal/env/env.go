@@ -2,7 +2,9 @@ package env
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"go-todo/internal/convert"
+	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
 	"os"
 )
@@ -46,4 +48,18 @@ func FileName() string {
 		envFileName = fmt.Sprintf(".env.%s", environment)
 	}
 	return envFileName
+}
+
+func Load() {
+	const envName = "ENVIRONMENT_NAME"
+	env := os.Getenv(envName)
+
+	if env == "" {
+		env = "local"
+		errorutl.Log(os.Setenv(envName, env))
+	}
+
+	errorutl.Fatal(
+		godotenv.Load(fmt.Sprintf(".env.%s", env)),
+	)
 }

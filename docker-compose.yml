@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mysql:8.0
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
+
+  redis:
+    image: redis:7.0
+    hostname: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  app:
+    build: .
+    restart: always
+    depends_on:
+      - db
+      - redis
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    environment:
+      ENVIRONMENT_NAME: 'docker'
+      WAIT_HOSTS: mysql:3306, redis:6379
