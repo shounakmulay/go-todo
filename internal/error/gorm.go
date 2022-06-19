@@ -10,7 +10,7 @@ import (
 
 func GormToResErr(err error, id any) *resmodel.ErrorResponse {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return resmodel.NotFound(fmt.Sprintf("No record found for id = %v", id))
+		return resmodel.NotFound(fmt.Sprintf("No record found for %v", id))
 	}
 
 	mysqlErr, ok := err.(*mysql.MySQLError)

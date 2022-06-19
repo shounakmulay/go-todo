@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"go-todo/internal/returns"
 	"go-todo/server/daos"
 	"go-todo/server/model/dbmodel"
 	"go-todo/server/model/reqmodel"
@@ -23,17 +22,17 @@ func (r RoleController) CreateRole(role reqmodel.CreateRole) (int, error) {
 		Name:        role.Name,
 		AccessLevel: role.AccessLevel,
 	}
-	id, err := r.Dao.CreateRole(dbRole)
 
-	return returns.ErrorOrValue(err, id)
+	return r.Dao.CreateRole(dbRole)
 }
 
 func (r RoleController) FindRoleByID(id int) (resmodel.Role, error) {
 	role, err := r.Dao.FindRoleById(id)
 
-	return returns.ErrorOrValue(err, resmodel.Role{
+	roleRes := resmodel.Role{
 		ID:          role.ID,
 		Name:        role.Name,
 		AccessLevel: role.AccessLevel,
-	})
+	}
+	return roleRes, err
 }

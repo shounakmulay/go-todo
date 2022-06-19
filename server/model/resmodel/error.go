@@ -22,6 +22,10 @@ func InternalServerError(err error) *ErrorResponse {
 	return errorResponse(err, http.StatusInternalServerError)
 }
 
+func Unauthorized(err error) *ErrorResponse {
+	return errorResponse(err, http.StatusUnauthorized)
+}
+
 func NotFound(msg string) *ErrorResponse {
 	return &ErrorResponse{
 		Status:  http.StatusNotFound,

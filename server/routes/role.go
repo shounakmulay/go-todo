@@ -37,16 +37,11 @@ func Role(g *echo.Group, controller controller.IRoleController) {
 			return json.Error(c, bindValErr)
 		}
 
-		dbRole, err := controller.FindRoleByID(role.ID)
+		resRole, err := controller.FindRoleByID(role.ID)
 		if err != nil {
 			return json.Error(c, errorutl.GormToResErr(err, role.ID))
 		}
 
-		resRole := resmodel.Role{
-			ID:          dbRole.ID,
-			Name:        dbRole.Name,
-			AccessLevel: dbRole.AccessLevel,
-		}
 		return json.Success(c, resRole)
 	})
 }

@@ -1,10 +1,11 @@
 package seed
 
 import (
+	"fmt"
 	"github.com/brianvoe/gofakeit/v6"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
-	dbmodel2 "go-todo/server/model/dbmodel"
+	"go-todo/server/model/dbmodel"
 	"gorm.io/gorm"
 	"math/rand"
 	"time"
@@ -18,18 +19,14 @@ func DB(db *gorm.DB) {
 
 func seedRoles(db *gorm.DB) {
 	log.Logger.Debug("Seeding Roles...")
-	roles := []dbmodel2.Role{
+	roles := []dbmodel.Role{
 		{
 			Name:        "user",
 			AccessLevel: 100,
 		},
 		{
-			Name:        "auditor",
-			AccessLevel: 200,
-		},
-		{
 			Name:        "admin",
-			AccessLevel: 300,
+			AccessLevel: 200,
 		},
 	}
 	errorutl.Fatal(db.Create(&roles).Error)
@@ -38,47 +35,47 @@ func seedRoles(db *gorm.DB) {
 
 func seedUsers(db *gorm.DB) {
 	log.Logger.Debug("Seeding Users...")
-	var roles []dbmodel2.Role
+	var roles []dbmodel.Role
 	result := db.Find(&roles)
 	errorutl.Fatal(result.Error)
 
-	var users []dbmodel2.User
+	var users []dbmodel.User
 	// add users
-	for i := 0; i < 8; i++ {
-		user := dbmodel2.User{
+	for i := 0; i < 25; i++ {
+		var password string
+		if i <= 5 {
+			password = fmt.Sprintf("userpass%d", i)
+		} else {
+			password = gofakeit.Password(true, true, true, true, false, 16)
+		}
+
+		user := dbmodel.User{
 			FirstName: gofakeit.FirstName(),
 			LastName:  gofakeit.LastName(),
 			Username:  gofakeit.Username(),
-			Password:  gofakeit.Password(true, true, true, true, false, 16),
+			Password:  password,
 			Email:     gofakeit.Email(),
 			Mobile:    gofakeit.Phone(),
 			RoleId:    roles[0].ID,
 		}
 		users = append(users, user)
 	}
-	// add auditors
-	for i := 0; i < 4; i++ {
-		user := dbmodel2.User{
+	// add admins
+	for i := 0; i < 8; i++ {
+		var password string
+		if i <= 3 {
+			password = fmt.Sprintf("adminpass%d", i)
+		} else {
+			password = gofakeit.Password(true, true, true, true, false, 16)
+		}
+		user := dbmodel.User{
 			FirstName: gofakeit.FirstName(),
 			LastName:  gofakeit.LastName(),
 			Username:  gofakeit.Username(),
-			Password:  gofakeit.Password(true, true, true, true, false, 16),
+			Password:  password,
 			Email:     gofakeit.Email(),
 			Mobile:    gofakeit.Phone(),
 			RoleId:    roles[1].ID,
-		}
-		users = append(users, user)
-	}
-	// add admins
-	for i := 0; i < 3; i++ {
-		user := dbmodel2.User{
-			FirstName: gofakeit.FirstName(),
-			LastName:  gofakeit.LastName(),
-			Username:  gofakeit.Username(),
-			Password:  gofakeit.Password(true, true, true, true, false, 16),
-			Email:     gofakeit.Email(),
-			Mobile:    gofakeit.Phone(),
-			RoleId:    roles[2].ID,
 		}
 		users = append(users, user)
 	}
@@ -88,15 +85,15 @@ func seedUsers(db *gorm.DB) {
 
 func seedTodos(db *gorm.DB) {
 	log.Logger.Debug("Seeding Todos...")
-	var users []dbmodel2.User
-	result := db.Where(&dbmodel2.User{RoleId: 1}).Find(&users)
+	var users []dbmodel.User
+	result := db.Where(&dbmodel.User{RoleId: 1}).Find(&users)
 	errorutl.Fatal(result.Error)
 
-	var todos []dbmodel2.Todo
+	var todos []dbmodel.Todo
 	for _, u := range users {
 		r := rand.Intn(10)
 		for i := 0; i <= r; i++ {
-			todo := dbmodel2.Todo{
+			todo := dbmodel.Todo{
 				UserID:      u.ID,
 				Title:       gofakeit.Sentence(10),
 				Description: gofakeit.Sentence(100),

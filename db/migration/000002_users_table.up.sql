@@ -7,7 +7,9 @@ CREATE TABLE users
     password   text,
     email      VARCHAR(255) UNIQUE,
     mobile     text,
-    role_id    int REFERENCES roles (id),
+    token      text,
+    role_id    int,
+    FOREIGN KEY (role_id) REFERENCES roles (id),
     created_at timestamp,
     updated_at timestamp,
     deleted_at timestamp

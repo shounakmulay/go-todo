@@ -1,7 +1,6 @@
 package daos
 
 import (
-	"go-todo/internal/returns"
 	"go-todo/server/model/dbmodel"
 	"gorm.io/gorm"
 )
@@ -24,5 +23,5 @@ func (d RoleDao) FindRoleById(id int) (dbmodel.Role, error) {
 
 func (d RoleDao) CreateRole(role dbmodel.Role) (int, error) {
 	result := d.db.Create(&role)
-	return returns.ErrorOrValue(result.Error, role.ID)
+	return role.ID, result.Error
 }

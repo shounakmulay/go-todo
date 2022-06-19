@@ -24,7 +24,13 @@ func NewEcho(cfg *config.Configuration) *echo.Echo {
 
 	e.Validator = validator.NewEchoRequestValidator()
 
-	e.Use(bodyDumpLogger, echoLogger, middleware.Recover(), secure.CORS(), secure.Headers())
+	e.Use(
+		bodyDumpLogger,
+		echoLogger,
+		middleware.Recover(),
+		secure.CORS(),
+		secure.Headers(),
+	)
 
 	e.GET("/", healthCheck)
 

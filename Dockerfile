@@ -8,7 +8,7 @@ RUN chmod +x /wait
 
 RUN go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
-COPY go.mod go.sum ./
+ADD go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .

@@ -33,6 +33,12 @@ func Load() (*Configuration, error) {
 			Timeout:       env.GetInt("DB_TIMEOUT_SECONDS"),
 			SlowThreshold: env.GetInt("DB_SLOW_THRESHOLD_MS"),
 		},
+		JWT: &JWT{
+			Secret:           env.GetString("JWT_SECRET"),
+			MinSecretLength:  env.GetInt("JWT_MIN_SECRET_LENGTH"),
+			DurationMinutes:  env.GetInt("JWT_DURATION_MINS"),
+			SigningAlgorithm: env.GetString("JWT_ALGO"),
+		},
 	}
 
 	return cfg, nil
