@@ -8,8 +8,10 @@ import (
 
 type IUserController interface {
 	CreateUser(user reqmodel.CreateUser) (int, error)
-	UpdateUser(user *dbmodel.User) error
+	UpdateUser(user reqmodel.UpdateUser) error
+	UpdateUserToken(user *dbmodel.User) error
 	FindUserByUsername(username string) (resmodel.User, error)
 	FindDBUserByUsername(username string) (dbmodel.User, error)
 	FindUser(id int) (resmodel.User, error)
+	DeleteUser(id int) error
 }

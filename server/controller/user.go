@@ -29,7 +29,20 @@ func (u UserController) CreateUser(user reqmodel.CreateUser) (int, error) {
 	return u.dao.CreateUser(dbUser)
 }
 
-func (u UserController) UpdateUser(user *dbmodel.User) error {
+func (u UserController) UpdateUser(user reqmodel.UpdateUser) error {
+	dbUser := dbmodel.User{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Username:  user.Username,
+		Email:     user.Email,
+		Mobile:    user.Mobile,
+	}
+
+	return u.dao.UpdateUser(dbUser)
+}
+
+func (u UserController) UpdateUserToken(user *dbmodel.User) error {
 	return u.dao.UpdateUserToken(user)
 }
 
@@ -58,6 +71,10 @@ func (u UserController) FindUser(id int) (resmodel.User, error) {
 	}
 
 	return dbToResUser(dbUser), nil
+}
+
+func (u UserController) DeleteUser(id int) error {
+	return u.dao.DeleteUser(id)
 }
 
 func dbToResUser(dbUser dbmodel.User) resmodel.User {

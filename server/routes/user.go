@@ -1,19 +1,22 @@
 package routes
 
 import (
-	"github.com/labstack/echo/v4"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/json"
 	"go-todo/server/controller"
 	"go-todo/server/model/reqmodel"
+	"go-todo/server/model/resmodel"
 	"go-todo/server/validator"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 func User(g *echo.Group, controller controller.IUserController) {
 	user := g.Group("/user")
 
 	user.GET("/id/:id", func(c echo.Context) error {
-		findUserReq := &reqmodel.FindUserByID{}
+		findUserReq := &reqmodel.UserID{}
 		bindValErr := validator.BindAndValidate(c, findUserReq)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
@@ -40,5 +43,52 @@ func User(g *echo.Group, controller controller.IUserController) {
 		}
 
 		return json.Success(c, user)
+	})
+
+	user.POST("", func(c echo.Context) error {
+		reqUser := reqmodel.CreateUser{}
+		bindValErr := validator.BindAndValidate(c, &reqUser)
+		if bindValErr != nil {
+			return json.Error(c, bindValErr)
+		}
+
+		userID, err := controller.CreateUser(reqUser)
+		if err != nil {
+			return json.Error(c, errorutl.GormToResErr(err, reqUser.Username))
+		}
+
+		return json.Created(c, &resmodel.CreateUser{
+			ID: userID,
+		})
+	})
+
+	user.PUT("", func(c echo.Context) error {
+		reqUser := reqmodel.UpdateUser{}
+		bindValErr := validator.BindAndValidate(c, &reqUser)
+		if bindValErr != nil {
+			return json.Error(c, bindValErr)
+		}
+
+		err := controller.UpdateUser(reqUser)
+		if err != nil {
+			return json.Error(c, errorutl.GormToResErr(err, reqUser.ID))
+		}
+
+		return c.NoContent(http.StatusOK)
+	})
+
+	user.DELETE("/id/:id", func(c echo.Context) error {
+		userID := &reqmodel.UserID{}
+		bindValErr := validator.BindAndValidate(c, userID)
+		if bindValErr != nil {
+			return json.Error(c, bindValErr)
+		}
+
+		err := controller.DeleteUser(userID.ID)
+		if err != nil {
+			return json.Error(c, errorutl.GormToResErr(err, userID.ID))
+		}
+
+		return c.NoContent(http.StatusOK)
 	})
 }

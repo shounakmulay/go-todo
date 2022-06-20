@@ -13,3 +13,11 @@ func Success(c echo.Context, data any) error {
 	}
 	return c.JSON(http.StatusOK, response)
 }
+
+func Created(c echo.Context, data any) error {
+	response := resmodel.Response{
+		Status: http.StatusCreated,
+		Body:   data,
+	}
+	return c.JSON(http.StatusCreated, response)
+}

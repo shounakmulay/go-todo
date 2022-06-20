@@ -3,13 +3,14 @@ package jwt
 import (
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt/v4"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"go-todo/server/config"
 	"go-todo/server/controller"
 	"go-todo/server/model"
 	"regexp"
+
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 var (
@@ -38,7 +39,7 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 			// Check token validity and extract claims
 			if claims, ok := token.Claims.(*model.JwtCustomClaims); ok && token.Valid {
 				roleID := claims.Role
-				//username := claims.Username
+				// username := claims.Username
 				path := c.Path()
 
 				// Check if request requires admin
@@ -50,10 +51,14 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 				}
 
 				if isAdminPath && roleID != adminRoleId {
-					return nil, errors.New("Unauthorized! \n Only admins are authorized to make this request.")
+					return nil, errors.New("unauthorized! Only admins are authorized to make this request")
 				}
 
-				// TODO: Check if user exists
+				// // Check if the user exists in the database
+				// _, dbErr := controller.FindDBUserByUsername(username)
+				// if dbErr != nil {
+				// 	return nil, errors.New("unauthorized! User not found")
+				// }
 
 				return token, nil
 			} else {

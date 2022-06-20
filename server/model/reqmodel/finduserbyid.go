@@ -1,5 +1,5 @@
 package reqmodel
 
-type FindUserByID struct {
+type UserID struct {
 	ID int `param:"id" validate:"required"`
 }
