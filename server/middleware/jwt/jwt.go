@@ -22,8 +22,8 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 	return middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: cfg.Secret,
 		ParseTokenFunc: func(auth string, c echo.Context) (interface{}, error) {
-			// TODO: Check if route requires auth
 
+			// Parse token
 			claims := &model.JwtCustomClaims{}
 			token, err := jwt.ParseWithClaims(auth, claims, func(token *jwt.Token) (interface{}, error) {
 				if token.Method.Alg() != "HS256" {
@@ -35,11 +35,13 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 				return nil, err
 			}
 
+			// Check token validity and extract claims
 			if claims, ok := token.Claims.(*model.JwtCustomClaims); ok && token.Valid {
 				roleID := claims.Role
 				//username := claims.Username
 				path := c.Path()
 
+				// Check if request requires admin
 				isAdminPath, err := regexp.MatchString(adminPathsRegex, path)
 				if err != nil {
 					// Entering this block means the regex is invalid.
