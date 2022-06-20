@@ -30,7 +30,7 @@ func (u UserController) CreateUser(user reqmodel.CreateUser) (int, error) {
 }
 
 func (u UserController) UpdateUser(user *dbmodel.User) error {
-	return u.dao.UpdateUser(user)
+	return u.dao.UpdateUserToken(user)
 }
 
 func (u UserController) FindUserByUsername(username string) (resmodel.User, error) {

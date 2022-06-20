@@ -18,8 +18,8 @@ func (u UserDao) CreateUser(user dbmodel.User) (int, error) {
 	return user.ID, result.Error
 }
 
-func (u UserDao) UpdateUser(user *dbmodel.User) error {
-	result := u.db.Save(&user)
+func (u UserDao) UpdateUserToken(user *dbmodel.User) error {
+	result := u.db.Model(&user).Update("token", user.Token)
 	return result.Error
 }
 
