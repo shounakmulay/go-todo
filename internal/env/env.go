@@ -2,11 +2,13 @@ package env
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
+	"os"
+
 	"go-todo/internal/convert"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
-	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func GetString(key string) string {
@@ -14,6 +16,7 @@ func GetString(key string) string {
 	if value == "" {
 		keyNotFound(key)
 	}
+
 	return value
 }
 
@@ -42,6 +45,7 @@ func keyNotFound(key string) {
 func FileName() string {
 	environment := os.Getenv("ENVIRONMENT_NAME")
 	var envFileName string
+
 	if environment == "" {
 		envFileName = ".env"
 	} else {

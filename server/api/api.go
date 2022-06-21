@@ -1,12 +1,13 @@
 package api
 
 import (
-	"github.com/labstack/echo/v4"
 	"go-todo/server/config"
 	"go-todo/server/controller"
 	"go-todo/server/daos"
 	"go-todo/server/middleware/jwt"
 	"go-todo/server/routes"
+
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 

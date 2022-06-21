@@ -6,5 +6,5 @@ import (
 
 type IRoleDao interface {
 	CreateRole(role dbmodel.Role) (int, error)
-	FindRoleById(id int) (dbmodel.Role, error)
+	FindRoleByID(id int) (dbmodel.Role, error)
 }

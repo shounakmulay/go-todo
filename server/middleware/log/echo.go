@@ -2,9 +2,11 @@ package log
 
 import (
 	"fmt"
+
+	"go-todo/internal/log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"go-todo/internal/log"
 )
 
 func EchoLogger(skipper middleware.Skipper) echo.MiddlewareFunc {

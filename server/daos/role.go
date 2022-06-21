@@ -2,6 +2,7 @@ package daos
 
 import (
 	"go-todo/server/model/dbmodel"
+
 	"gorm.io/gorm"
 )
 
@@ -15,7 +16,7 @@ func NewDao(db *gorm.DB) *RoleDao {
 	}
 }
 
-func (d RoleDao) FindRoleById(id int) (dbmodel.Role, error) {
+func (d RoleDao) FindRoleByID(id int) (dbmodel.Role, error) {
 	role := &dbmodel.Role{ID: id}
 	result := d.db.First(role)
 	return *role, result.Error

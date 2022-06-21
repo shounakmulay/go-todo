@@ -1,15 +1,15 @@
 package log
 
-type gormLogger struct {
+type GormLogger struct {
 	logger *logger
 }
 
-func NewGormLogger() gormLogger {
-	return gormLogger{
+func NewGormLogger() GormLogger {
+	return GormLogger{
 		logger: Logger,
 	}
 }
 
-func (gl gormLogger) Printf(template string, args ...interface{}) {
+func (gl GormLogger) Printf(template string, args ...interface{}) {
 	gl.logger.Named("GORM: ").Debugf(template, args)
 }

@@ -1,8 +1,9 @@
 package json
 
 import (
-	"github.com/labstack/echo/v4"
 	"go-todo/server/model/resmodel"
+
+	"github.com/labstack/echo/v4"
 )
 
 func Error(c echo.Context, err *resmodel.ErrorResponse) error {

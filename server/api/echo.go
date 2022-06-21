@@ -1,13 +1,15 @@
 package api
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"net/http"
+
 	"go-todo/server/config"
 	"go-todo/server/middleware/log"
 	"go-todo/server/middleware/secure"
 	"go-todo/server/validator"
-	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func NewEcho(cfg *config.Configuration) *echo.Echo {

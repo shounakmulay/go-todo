@@ -1,8 +1,9 @@
 package validator
 
 import (
-	"github.com/labstack/echo/v4"
 	"go-todo/server/model/resmodel"
+
+	"github.com/labstack/echo/v4"
 )
 
 func BindAndValidate(c echo.Context, model interface{}) *resmodel.ErrorResponse {

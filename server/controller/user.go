@@ -23,7 +23,7 @@ func (u UserController) CreateUser(user reqmodel.CreateUser) (int, error) {
 		Password:  user.Password,
 		Email:     user.Email,
 		Mobile:    user.Mobile,
-		RoleId:    user.RoleID,
+		RoleID:    user.RoleID,
 	}
 
 	return u.dao.CreateUser(dbUser)
@@ -85,6 +85,6 @@ func dbToResUser(dbUser dbmodel.User) resmodel.User {
 		Username:  dbUser.Username,
 		Email:     dbUser.Email,
 		Mobile:    dbUser.Mobile,
-		RoleID:    dbUser.RoleId,
+		RoleID:    dbUser.RoleID,
 	}
 }

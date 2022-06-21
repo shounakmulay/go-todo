@@ -3,8 +3,10 @@ package error
 import (
 	"errors"
 	"fmt"
-	"github.com/go-sql-driver/mysql"
+
 	"go-todo/server/model/resmodel"
+
+	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 

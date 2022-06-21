@@ -27,7 +27,7 @@ func (r RoleController) CreateRole(role reqmodel.CreateRole) (int, error) {
 }
 
 func (r RoleController) FindRoleByID(id int) (resmodel.Role, error) {
-	role, err := r.Dao.FindRoleById(id)
+	role, err := r.Dao.FindRoleByID(id)
 
 	roleRes := resmodel.Role{
 		ID:          role.ID,

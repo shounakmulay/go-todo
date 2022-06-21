@@ -1,13 +1,14 @@
 package routes
 
 import (
-	"github.com/labstack/echo/v4"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/json"
 	"go-todo/server/controller"
 	"go-todo/server/model/reqmodel"
 	"go-todo/server/model/resmodel"
 	"go-todo/server/validator"
+
+	"github.com/labstack/echo/v4"
 )
 
 func Role(g *echo.Group, controller controller.IRoleController) {

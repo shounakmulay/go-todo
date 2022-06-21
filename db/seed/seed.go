@@ -2,13 +2,15 @@ package seed
 
 import (
 	"fmt"
-	"github.com/brianvoe/gofakeit/v6"
+	"math/rand"
+	"time"
+
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
 	"go-todo/server/model/dbmodel"
+
+	"github.com/brianvoe/gofakeit/v6"
 	"gorm.io/gorm"
-	"math/rand"
-	"time"
 )
 
 func DB(db *gorm.DB) {
@@ -19,6 +21,7 @@ func DB(db *gorm.DB) {
 
 func seedRoles(db *gorm.DB) {
 	log.Logger.Debug("Seeding Roles...")
+
 	roles := []dbmodel.Role{
 		{
 			Name:        "user",
@@ -35,6 +38,7 @@ func seedRoles(db *gorm.DB) {
 
 func seedUsers(db *gorm.DB) {
 	log.Logger.Debug("Seeding Users...")
+
 	var roles []dbmodel.Role
 	result := db.Find(&roles)
 	errorutl.Fatal(result.Error)
@@ -56,8 +60,9 @@ func seedUsers(db *gorm.DB) {
 			Password:  password,
 			Email:     gofakeit.Email(),
 			Mobile:    gofakeit.Phone(),
-			RoleId:    roles[0].ID,
+			RoleID:    roles[0].ID,
 		}
+
 		users = append(users, user)
 	}
 	// add admins
@@ -68,6 +73,7 @@ func seedUsers(db *gorm.DB) {
 		} else {
 			password = gofakeit.Password(true, true, true, true, false, 16)
 		}
+
 		user := dbmodel.User{
 			FirstName: gofakeit.FirstName(),
 			LastName:  gofakeit.LastName(),
@@ -75,7 +81,7 @@ func seedUsers(db *gorm.DB) {
 			Password:  password,
 			Email:     gofakeit.Email(),
 			Mobile:    gofakeit.Phone(),
-			RoleId:    roles[1].ID,
+			RoleID:    roles[1].ID,
 		}
 		users = append(users, user)
 	}
@@ -85,11 +91,13 @@ func seedUsers(db *gorm.DB) {
 
 func seedTodos(db *gorm.DB) {
 	log.Logger.Debug("Seeding Todos...")
+
 	var users []dbmodel.User
-	result := db.Where(&dbmodel.User{RoleId: 1}).Find(&users)
+	result := db.Where(&dbmodel.User{RoleID: 1}).Find(&users)
 	errorutl.Fatal(result.Error)
 
 	var todos []dbmodel.Todo
+
 	for _, u := range users {
 		r := rand.Intn(10)
 		for i := 0; i <= r; i++ {
@@ -102,6 +110,7 @@ func seedTodos(db *gorm.DB) {
 			todos = append(todos, todo)
 		}
 	}
+
 	errorutl.Fatal(db.Create(&todos).Error)
 	log.Logger.Debug("Seeding Todos Done.")
 }

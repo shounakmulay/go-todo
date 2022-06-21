@@ -55,3 +55,11 @@ local-services:
 	docker-compose --env-file ./.env.docker \
 	-f docker-compose.yml \
 	-f docker-compose.yml up db redis
+
+.PHONY: format
+format:
+	gofmt -l -s -w .
+
+.PHONY: lint
+lint:
+	golangci-lint run

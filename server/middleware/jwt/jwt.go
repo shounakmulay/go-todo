@@ -3,10 +3,11 @@ package jwt
 import (
 	"errors"
 	"fmt"
+	"regexp"
+
 	"go-todo/server/config"
 	"go-todo/server/controller"
 	"go-todo/server/model/claims"
-	"regexp"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -16,14 +17,13 @@ import (
 var (
 	adminPathsRegex = "(\\/api\\/user.*)|(\\/api\\/role.*)"
 
-	adminRoleId = 2
+	adminRoleID = 2
 )
 
 func JWT(cfg *config.JWT, controller controller.IUserController) echo.MiddlewareFunc {
 	return middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: cfg.Secret,
 		ParseTokenFunc: func(auth string, c echo.Context) (interface{}, error) {
-
 			// Parse token
 			token, err := jwt.ParseWithClaims(auth, &claims.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 				if token.Method.Alg() != "HS256" {
@@ -49,7 +49,7 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 					panic(fmt.Sprintf("Invalid regex: %v", err))
 				}
 
-				if isAdminPath && roleID != adminRoleId {
+				if isAdminPath && roleID != adminRoleID {
 					return nil, errors.New("unauthorized! Only admins are authorized to make this request")
 				}
 
@@ -60,9 +60,9 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 				// }
 
 				return token, nil
-			} else {
-				return nil, errors.New("could not validate token")
 			}
+
+			return nil, errors.New("could not validate token")
 		},
 	})
 }

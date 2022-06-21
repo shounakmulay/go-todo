@@ -1,8 +1,9 @@
 package convert
 
 import (
-	errorutl "go-todo/internal/error"
 	"strconv"
+
+	errorutl "go-todo/internal/error"
 )
 
 func StringToInt(s string) int {

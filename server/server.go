@@ -2,17 +2,19 @@ package server
 
 import (
 	"context"
-	"github.com/labstack/echo/v4"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
+
 	"go-todo/db/mysql"
 	"go-todo/internal/env"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
 	"go-todo/server/api"
 	"go-todo/server/config"
-	"net/http"
-	"os"
-	"os/signal"
-	"time"
+
+	"github.com/labstack/echo/v4"
 )
 
 func Start(cfg *config.Configuration) error {
@@ -30,7 +32,6 @@ func Start(cfg *config.Configuration) error {
 }
 
 func startServer(cfg *config.Configuration, echoServer *echo.Echo) error {
-
 	httpServer := &http.Server{
 		Addr:         cfg.Server.Port,
 		ReadTimeout:  time.Duration(cfg.Server.ReadTimeoutSeconds) * time.Second,
@@ -42,6 +43,7 @@ func startServer(cfg *config.Configuration, echoServer *echo.Echo) error {
 	// Start server
 	go func() {
 		log.Logger.Infof("Starting server at %v", env.GetInt("SERVER_PORT"))
+
 		if err := echoServer.StartServer(httpServer); err != nil {
 			log.Logger.Info("Shutting down the server")
 		}
@@ -52,8 +54,11 @@ func startServer(cfg *config.Configuration, echoServer *echo.Echo) error {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
 	defer cancel()
+
 	if err := echoServer.Shutdown(ctx); err != nil {
 		return errorutl.Format("error gracefully shutting down server", err)
 	}

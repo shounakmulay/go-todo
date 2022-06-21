@@ -1,7 +1,7 @@
 package config
 
 type Database struct {
-	Url           string
+	URL           string
 	LogQueries    bool
 	Timeout       int
 	SlowThreshold int

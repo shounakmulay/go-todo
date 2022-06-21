@@ -14,5 +14,4 @@ func Success(data any) Response {
 		Status: http.StatusOK,
 		Body:   data,
 	}
-
 }

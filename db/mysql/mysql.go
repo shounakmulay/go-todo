@@ -1,13 +1,15 @@
 package mysql
 
 import (
+	"time"
+
 	"go-todo/internal/env"
 	"go-todo/internal/log"
 	"go-todo/server/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"time"
 )
 
 func Connect(cfg *config.Configuration) (*gorm.DB, error) {
@@ -27,5 +29,4 @@ func Connect(cfg *config.Configuration) (*gorm.DB, error) {
 	return gorm.Open(sqlDialector, &gorm.Config{
 		Logger: gormLogger,
 	})
-
 }

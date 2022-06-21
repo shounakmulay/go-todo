@@ -16,7 +16,7 @@ func (v *EchoRequestValidator) Validate(i interface{}) error {
 	err := v.validator.Struct(i)
 	if err != nil {
 		// TODO: Handle error array
-		//for _, err := range err.(val.ValidationErrors) {
+		// for _, err := range err.(val.ValidationErrors) {
 		//
 		//}
 		return err

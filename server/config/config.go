@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"go-todo/internal/env"
 	"os"
+
+	"go-todo/internal/env"
 )
 
 func Load() (*Configuration, error) {
@@ -28,7 +29,7 @@ func Load() (*Configuration, error) {
 			SkipBodyDump:        env.GetBool("SERVER_SKIP_BODY_DUMP"),
 		},
 		Database: &Database{
-			Url:           env.GetString("DB_SQL_URL"),
+			URL:           env.GetString("DB_SQL_URL"),
 			LogQueries:    env.GetBool("DB_LOG_QUERIES"),
 			Timeout:       env.GetInt("DB_TIMEOUT_SECONDS"),
 			SlowThreshold: env.GetInt("DB_SLOW_THRESHOLD_MS"),

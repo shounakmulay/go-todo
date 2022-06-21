@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/json"
 	"go-todo/server/controller"
@@ -53,12 +54,16 @@ func Auth(e *echo.Echo, userController controller.IUserController, jwtController
 			return json.Error(c, bindValErr)
 		}
 
-		refreshToken, err := jwt.ParseWithClaims(reqRefresh.RefreshToken, &claims.JwtRefreshClaims{}, func(token *jwt.Token) (interface{}, error) {
-			if token.Method.Alg() != "HS256" {
-				return nil, fmt.Errorf("unexpected jwt signing method=%v", token.Header["alg"])
-			}
-			return jwtController.GetRefreshSecret(), nil
-		})
+		refreshToken, err := jwt.ParseWithClaims(
+			reqRefresh.RefreshToken,
+			&claims.JwtRefreshClaims{},
+			func(token *jwt.Token) (interface{}, error) {
+				if token.Method.Alg() != "HS256" {
+					return nil, fmt.Errorf("unexpected jwt signing method=%v", token.Header["alg"])
+				}
+				return jwtController.GetRefreshSecret(), nil
+			})
+
 		if err != nil {
 			return json.Error(c, resmodel.Unauthorized(err))
 		}
@@ -105,6 +110,7 @@ func generateTokensAndUpdateUser(
 
 	user.Token = jwtTokens.RefreshToken
 	updateErr := userController.UpdateUserToken(&user)
+
 	if updateErr != nil {
 		return jwtTokens, resmodel.InternalServerError(updateErr)
 	}
