@@ -8,6 +8,7 @@ import (
 	"go-todo/server/config"
 	"go-todo/server/controller"
 	"go-todo/server/model/claims"
+	"go-todo/server/model/ctx"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -22,6 +23,7 @@ var (
 
 func JWT(cfg *config.JWT, controller controller.IUserController) echo.MiddlewareFunc {
 	return middleware.JWTWithConfig(middleware.JWTConfig{
+		ContextKey: cfg.ContextKey,
 		SigningKey: cfg.Secret,
 		ParseTokenFunc: func(auth string, c echo.Context) (interface{}, error) {
 			// Parse token
@@ -53,13 +55,11 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 					return nil, errors.New("unauthorized! Only admins are authorized to make this request")
 				}
 
-				// // Check if the user exists in the database
-				// _, dbErr := controller.FindDBUserByUsername(username)
-				// if dbErr != nil {
-				// 	return nil, errors.New("unauthorized! User not found")
-				// }
-
-				return token, nil
+				return ctx.User{
+					ID:       jwtClaims.ID,
+					Username: jwtClaims.Username,
+					RoleID:   jwtClaims.Role,
+				}, nil
 			}
 
 			return nil, errors.New("could not validate token")

@@ -7,6 +7,8 @@ import (
 	"go-todo/internal/env"
 )
 
+const JwtContextKey string = "USER"
+
 func Load() (*Configuration, error) {
 	envLoadErr := checkEnvKeysPresent(
 		"DB_TIMEOUT_SECONDS",
@@ -41,6 +43,7 @@ func Load() (*Configuration, error) {
 			DurationMinutes:        env.GetInt("JWT_DURATION_MINS"),
 			RefreshDurationMinutes: env.GetInt("JWT_REFRESH_MINS"),
 			SigningAlgorithm:       env.GetString("JWT_ALGO"),
+			ContextKey:             JwtContextKey,
 		},
 	}
 

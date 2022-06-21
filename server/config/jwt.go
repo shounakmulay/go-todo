@@ -7,4 +7,5 @@ type JWT struct {
 	DurationMinutes        int
 	RefreshDurationMinutes int
 	SigningAlgorithm       string
+	ContextKey             string
 }
