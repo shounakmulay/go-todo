@@ -7,4 +7,5 @@ import (
 
 type IJwtController interface {
 	GenerateTokens(user dbmodel.User) (resmodel.JwtTokens, error)
+	GetRefreshSecret() []byte
 }

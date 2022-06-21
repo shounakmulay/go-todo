@@ -1,23 +1,23 @@
 package controller
 
 import (
-	"crypto/sha1"
-	"errors"
 	"fmt"
-	"github.com/go-playground/validator"
-	"github.com/golang-jwt/jwt/v4"
 	"go-todo/server/config"
-	"go-todo/server/model"
+	"go-todo/server/model/claims"
 	"go-todo/server/model/dbmodel"
 	"go-todo/server/model/resmodel"
-	"strconv"
 	"time"
+
+	"github.com/go-playground/validator"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type JwtController struct {
-	secret []byte
-	ttl    time.Duration
-	algo   jwt.SigningMethod
+	secret        []byte
+	refreshSecret []byte
+	ttl           time.Duration
+	refreshTtl    time.Duration
+	algo          jwt.SigningMethod
 }
 
 func NewJwtController(config *config.JWT) (JwtController, error) {
@@ -25,18 +25,20 @@ func NewJwtController(config *config.JWT) (JwtController, error) {
 
 	if secretLen < config.MinSecretLength {
 		return JwtController{},
-			errors.New(fmt.Sprintf("JWT secret length too short. Should be at least %v", config.MinSecretLength))
+			fmt.Errorf("JWT secret length too short. Should be at least %v", config.MinSecretLength)
 	}
 
 	return JwtController{
-		secret: []byte(config.Secret),
-		ttl:    time.Duration(config.DurationMinutes) * time.Minute,
-		algo:   jwt.GetSigningMethod(config.SigningAlgorithm),
+		secret:        []byte(config.Secret),
+		refreshSecret: []byte(config.RefreshSecret),
+		ttl:           time.Duration(config.DurationMinutes) * time.Minute,
+		refreshTtl:    time.Duration(config.RefreshDurationMinutes) * time.Minute,
+		algo:          jwt.GetSigningMethod(config.SigningAlgorithm),
 	}, nil
 }
 
 func (c JwtController) GenerateTokens(user dbmodel.User) (resmodel.JwtTokens, error) {
-	claims := &model.JwtCustomClaims{
+	jwtclaims := &claims.JwtClaims{
 		ID:       user.ID,
 		Username: user.Username,
 		Role:     user.RoleId,
@@ -44,25 +46,35 @@ func (c JwtController) GenerateTokens(user dbmodel.User) (resmodel.JwtTokens, er
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(c.ttl)),
 		},
 	}
-	err := validator.New().Struct(claims)
+	refreshClaims := &claims.JwtRefreshClaims{
+		ID:       user.ID,
+		Username: user.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(c.refreshTtl)),
+			Subject:   "refresh",
+		},
+	}
+	err := validator.New().Struct(jwtclaims)
 	if err != nil {
 		return resmodel.JwtTokens{}, nil
 	}
 
-	token, tokenErr := jwt.NewWithClaims(c.algo, claims).SignedString(c.secret)
+	token, tokenErr := jwt.NewWithClaims(c.algo, jwtclaims).SignedString(c.secret)
 	if tokenErr != nil {
-		return resmodel.JwtTokens{}, err
+		return resmodel.JwtTokens{}, tokenErr
 	}
 
-	sha := sha1.New()
-	_, formatErr := fmt.Fprintf(sha, "%s%s", token, strconv.Itoa(time.Now().Nanosecond()))
-	if formatErr != nil {
-		return resmodel.JwtTokens{}, formatErr
+	refreshToken, refreshTokenErr := jwt.NewWithClaims(c.algo, refreshClaims).SignedString(c.refreshSecret)
+	if refreshTokenErr != nil {
+		return resmodel.JwtTokens{}, refreshTokenErr
 	}
-	refreshToken := fmt.Sprintf("%x", sha.Sum(nil))
 
 	return resmodel.JwtTokens{
 		Token:        token,
 		RefreshToken: refreshToken,
 	}, nil
+}
+
+func (c JwtController) GetRefreshSecret() []byte {
+	return c.refreshSecret
 }

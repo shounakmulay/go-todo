@@ -34,10 +34,12 @@ func Load() (*Configuration, error) {
 			SlowThreshold: env.GetInt("DB_SLOW_THRESHOLD_MS"),
 		},
 		JWT: &JWT{
-			Secret:           env.GetString("JWT_SECRET"),
-			MinSecretLength:  env.GetInt("JWT_MIN_SECRET_LENGTH"),
-			DurationMinutes:  env.GetInt("JWT_DURATION_MINS"),
-			SigningAlgorithm: env.GetString("JWT_ALGO"),
+			Secret:                 env.GetString("JWT_SECRET"),
+			RefreshSecret:          env.GetString("JWT_REFRESH_SECRET"),
+			MinSecretLength:        env.GetInt("JWT_MIN_SECRET_LENGTH"),
+			DurationMinutes:        env.GetInt("JWT_DURATION_MINS"),
+			RefreshDurationMinutes: env.GetInt("JWT_REFRESH_MINS"),
+			SigningAlgorithm:       env.GetString("JWT_ALGO"),
 		},
 	}
 

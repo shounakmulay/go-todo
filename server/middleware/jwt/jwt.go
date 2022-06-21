@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"go-todo/server/config"
 	"go-todo/server/controller"
-	"go-todo/server/model"
+	"go-todo/server/model/claims"
 	"regexp"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	adminPathsRegex = "(\\/api\\/user.*)"
+	adminPathsRegex = "(\\/api\\/user.*)|(\\/api\\/role.*)"
 
 	adminRoleId = 2
 )
@@ -25,8 +25,7 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 		ParseTokenFunc: func(auth string, c echo.Context) (interface{}, error) {
 
 			// Parse token
-			claims := &model.JwtCustomClaims{}
-			token, err := jwt.ParseWithClaims(auth, claims, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.ParseWithClaims(auth, &claims.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 				if token.Method.Alg() != "HS256" {
 					return nil, fmt.Errorf("unexpected jwt signing method=%v", token.Header["alg"])
 				}
@@ -36,9 +35,9 @@ func JWT(cfg *config.JWT, controller controller.IUserController) echo.Middleware
 				return nil, err
 			}
 
-			// Check token validity and extract claims
-			if claims, ok := token.Claims.(*model.JwtCustomClaims); ok && token.Valid {
-				roleID := claims.Role
+			// Check token validity and extract jwtClaims
+			if jwtClaims, ok := token.Claims.(*claims.JwtClaims); ok && token.Valid {
+				roleID := jwtClaims.Role
 				// username := claims.Username
 				path := c.Path()
 
