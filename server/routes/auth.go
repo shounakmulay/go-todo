@@ -23,7 +23,7 @@ func Auth(e *echo.Echo, userController controller.IUserController, jwtController
 
 	auth.POST("/login", func(c echo.Context) error {
 		reqLogin := &reqmodel.Login{}
-		bindValErr := validator.BindAndValidate(c, reqLogin)
+		bindValErr := validator.BindAndValidateWith(c, reqLogin, validator.BindBody)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
@@ -49,7 +49,7 @@ func Auth(e *echo.Echo, userController controller.IUserController, jwtController
 
 	auth.POST("/refresh", func(c echo.Context) error {
 		reqRefresh := &reqmodel.Refresh{}
-		bindValErr := validator.BindAndValidate(c, reqRefresh)
+		bindValErr := validator.BindAndValidateWith(c, reqRefresh, validator.BindBody)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}

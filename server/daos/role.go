@@ -10,7 +10,7 @@ type RoleDao struct {
 	db *gorm.DB
 }
 
-func NewDao(db *gorm.DB) *RoleDao {
+func NewRoleDao(db *gorm.DB) *RoleDao {
 	return &RoleDao{
 		db: db,
 	}

@@ -14,29 +14,32 @@ import (
 func Start(cfg *config.Configuration, db *gorm.DB) (*echo.Echo, error) {
 	e := NewEcho(cfg)
 
-	// TODO: Add Middlewares
-
-	// TODO: Add routing
-
 	// Setup Dependencies
 	jwtController, err := controller.NewJwtController(cfg.JWT)
 	if err != nil {
 		return nil, err
 	}
 
-	roleDao := daos.NewDao(db)
+	// Daos
+	roleDao := daos.NewRoleDao(db)
 	userDao := daos.NewUserDao(db)
+	todoDao := daos.NewTodoDao(db)
 
+	// Controllers
 	roleController := controller.NewRoleController(roleDao)
 	userController := controller.NewUserController(userDao)
+	todoController := controller.NewTodoController(todoDao)
 
+	// Routes without JWT
 	routes.Auth(e, userController, jwtController)
 
 	jwtMiddleware := jwt.JWT(cfg.JWT, userController)
 	api := e.Group("/api", jwtMiddleware)
 
+	// Routes with JWT
 	routes.Role(api, roleController)
 	routes.User(api, userController)
+	routes.Todo(api, todoController)
 
 	return e, nil
 }

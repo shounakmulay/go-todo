@@ -16,7 +16,7 @@ func Role(g *echo.Group, controller controller.IRoleController) {
 
 	role.POST("/", func(c echo.Context) error {
 		role := &reqmodel.CreateRole{}
-		bindValErr := validator.BindAndValidate(c, role)
+		bindValErr := validator.BindAndValidateWith(c, role, validator.BindBody)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
@@ -33,7 +33,7 @@ func Role(g *echo.Group, controller controller.IRoleController) {
 
 	role.GET("/:id", func(c echo.Context) error {
 		role := &reqmodel.FindRole{}
-		bindValErr := validator.BindAndValidate(c, role)
+		bindValErr := validator.BindAndValidateWith(c, role, validator.BindPath)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}

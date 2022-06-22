@@ -15,6 +15,11 @@ func GormToResErr(err error, id any) *resmodel.ErrorResponse {
 		return resmodel.NotFound(fmt.Sprintf("No record found for %v", id))
 	}
 
+	queryError, ok := err.(*QueryError)
+	if ok {
+		return resmodel.BadRequest(queryError)
+	}
+
 	mysqlErr, ok := err.(*mysql.MySQLError)
 	if ok {
 		switch mysqlErr.Number {
@@ -25,4 +30,18 @@ func GormToResErr(err error, id any) *resmodel.ErrorResponse {
 	}
 
 	return resmodel.InternalServerError(err)
+}
+
+type QueryError struct {
+	message string
+}
+
+func (q *QueryError) Error() string {
+	return q.message
+}
+
+func NewQueryError(msg string) *QueryError {
+	return &QueryError{
+		message: msg,
+	}
 }

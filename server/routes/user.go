@@ -6,7 +6,6 @@ import (
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/json"
 	"go-todo/server/controller"
-	"go-todo/server/model/ctx"
 	"go-todo/server/model/reqmodel"
 	"go-todo/server/model/resmodel"
 	"go-todo/server/validator"
@@ -19,7 +18,7 @@ func User(g *echo.Group, controller controller.IUserController) {
 
 	user.GET("/id/:id", func(c echo.Context) error {
 		findUserReq := &reqmodel.UserID{}
-		bindValErr := validator.BindAndValidate(c, findUserReq)
+		bindValErr := validator.BindAndValidateWith(c, findUserReq, validator.BindPath)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
@@ -34,7 +33,7 @@ func User(g *echo.Group, controller controller.IUserController) {
 
 	user.GET("/username/:username", func(c echo.Context) error {
 		findUserReq := &reqmodel.FindUserByUsername{}
-		bindValErr := validator.BindAndValidate(c, findUserReq)
+		bindValErr := validator.BindAndValidateWith(c, findUserReq, validator.BindPath)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
@@ -49,7 +48,7 @@ func User(g *echo.Group, controller controller.IUserController) {
 
 	user.POST("", func(c echo.Context) error {
 		reqUser := reqmodel.CreateUser{}
-		bindValErr := validator.BindAndValidate(c, &reqUser)
+		bindValErr := validator.BindAndValidateWith(c, &reqUser, validator.BindBody)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
@@ -66,7 +65,7 @@ func User(g *echo.Group, controller controller.IUserController) {
 
 	user.PUT("", func(c echo.Context) error {
 		reqUser := reqmodel.UpdateUser{}
-		bindValErr := validator.BindAndValidate(c, &reqUser)
+		bindValErr := validator.BindAndValidateWith(c, &reqUser, validator.BindBody)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
@@ -81,7 +80,7 @@ func User(g *echo.Group, controller controller.IUserController) {
 
 	user.DELETE("/id/:id", func(c echo.Context) error {
 		userID := &reqmodel.UserID{}
-		bindValErr := validator.BindAndValidate(c, userID)
+		bindValErr := validator.BindAndValidateWith(c, userID, validator.BindPath)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}

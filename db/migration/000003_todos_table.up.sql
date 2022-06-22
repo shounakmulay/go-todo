@@ -1,14 +1,14 @@
-CREATE TABLE todos
-(
-    id          int PRIMARY KEY AUTO_INCREMENT,
-    user_id     int,
-    title       text,
+CREATE TABLE todos (
+    id int PRIMARY KEY AUTO_INCREMENT,
+    user_id int,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    title text,
     description text,
-    due_date    timestamp,
-    done        tinyint(1),
-    created_at  timestamp,
-    updated_at  timestamp,
-    deleted_at  timestamp
+    due_date timestamp,
+    done tinyint(1),
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 CREATE INDEX todos_user_id_done_idx ON todos (user_id, done);
