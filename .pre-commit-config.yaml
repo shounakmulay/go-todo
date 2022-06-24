@@ -3,5 +3,5 @@ repos:
     - repo: https://github.com/tekwizely/pre-commit-golang
       rev: master
       hooks:
-          - id: golangci-lint-mod
-            args: [--config=.golangci.yml]
+          - id: golangci-lint
+            args: [--config=.golangci.yml, --fix]
