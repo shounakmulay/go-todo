@@ -63,3 +63,7 @@ format:
 .PHONY: lint
 lint:
 	golangci-lint run
+
+.PHONY: pre-commit-setup
+pre-commit-setup:
+	./scripts/pre-commit-setup.sh

@@ -23,7 +23,6 @@ type User struct {
 	Role      Role `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func (u *User) BeforeCreate(_ *gorm.DB) error {

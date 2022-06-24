@@ -1,7 +1,7 @@
 CREATE TABLE todos (
     id int PRIMARY KEY AUTO_INCREMENT,
     user_id int,
-    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     title text,
     description text,
     due_date timestamp,

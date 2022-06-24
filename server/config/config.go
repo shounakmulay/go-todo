@@ -45,6 +45,10 @@ func Load() (*Configuration, error) {
 			SigningAlgorithm:       env.GetString("JWT_ALGO"),
 			ContextKey:             JwtContextKey,
 		},
+		Redis: &Redis{
+			URL:  env.GetString("REDIS_URL"),
+			Port: env.GetString("REDIS_PORT"),
+		},
 	}
 
 	return cfg, nil

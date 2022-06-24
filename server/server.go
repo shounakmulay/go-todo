@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"go-todo/db/mysql"
+	"go-todo/db/redis"
 	"go-todo/internal/env"
 	errorutl "go-todo/internal/error"
 	"go-todo/internal/log"
@@ -23,7 +24,9 @@ func Start(cfg *config.Configuration) error {
 		return errorutl.Format("error connecting to MySQL", err)
 	}
 
-	echoServer, echoError := api.Start(cfg, db)
+	rdb := redis.Connect(cfg)
+
+	echoServer, echoError := api.Start(cfg, db, rdb)
 	if echoError != nil {
 		return errorutl.Format("error initializing api", echoError)
 	}

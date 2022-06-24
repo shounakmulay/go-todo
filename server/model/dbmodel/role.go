@@ -2,8 +2,6 @@ package dbmodel
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Role struct {
@@ -12,5 +10,4 @@ type Role struct {
 	AccessLevel int    `gorm:"column:access_level;not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }

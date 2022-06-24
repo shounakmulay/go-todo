@@ -6,7 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// Binding is done in following order: 1) path params; 2) query params; 3) request body when using Bind. Each step COULD override previous
+// Binding is done in following order: 1) path params; 2) query params;
+// 3) request body when using Bind. Each step COULD override previous
 // step binded values. For this reason we use methods BindBody, BindQueryParams, BindPathParams.
 func BindAndValidateWith(
 	c echo.Context,

@@ -20,9 +20,5 @@ linters:
     - revive # General purpose linter
     - unconvert # Detect unnecessary type conversions
     - unparam # Detect unused function parameters
-    - funlen # Detect function length
     - lll # Long line linter
     - tagliatelle
-linters-settings:
-  funlen:
-    lines: 80

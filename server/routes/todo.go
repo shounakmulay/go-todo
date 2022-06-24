@@ -52,14 +52,14 @@ func Todo(g *echo.Group, controller controller.ITodoController) {
 
 	todo.DELETE("/:id", func(c echo.Context) error {
 		user := ctx.GetUserFromContext(c)
-		todoId := &reqmodel.TodoID{}
+		todoID := &reqmodel.TodoID{}
 
-		bindValErr := validator.BindAndValidateWith(c, todoId, validator.BindPath)
+		bindValErr := validator.BindAndValidateWith(c, todoID, validator.BindPath)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
 
-		err := controller.DeleteTodo(todoId.ID, user.ID)
+		err := controller.DeleteTodo(todoID.ID, user.ID)
 		if err != nil {
 			return json.Error(c, errorutl.GormToResErr(err, user.ID))
 		}
@@ -69,16 +69,16 @@ func Todo(g *echo.Group, controller controller.ITodoController) {
 
 	todo.GET("/:id", func(c echo.Context) error {
 		user := ctx.GetUserFromContext(c)
-		todoId := &reqmodel.TodoID{}
+		todoID := &reqmodel.TodoID{}
 
-		bindValErr := validator.BindAndValidateWith(c, todoId, validator.BindPath)
+		bindValErr := validator.BindAndValidateWith(c, todoID, validator.BindPath)
 		if bindValErr != nil {
 			return json.Error(c, bindValErr)
 		}
 
-		todo, err := controller.GetTodo(todoId.ID, user.ID)
+		todo, err := controller.GetTodo(todoID.ID, user.ID)
 		if err != nil {
-			return json.Error(c, errorutl.GormToResErr(err, todoId.ID))
+			return json.Error(c, errorutl.GormToResErr(err, todoID.ID))
 		}
 
 		return json.Success(c, todo)

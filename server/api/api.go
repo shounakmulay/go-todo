@@ -1,17 +1,19 @@
 package api
 
 import (
+	"go-todo/server/cache"
 	"go-todo/server/config"
 	"go-todo/server/controller"
 	"go-todo/server/daos"
 	"go-todo/server/middleware/jwt"
 	"go-todo/server/routes"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
-func Start(cfg *config.Configuration, db *gorm.DB) (*echo.Echo, error) {
+func Start(cfg *config.Configuration, db *gorm.DB, redis *redis.Client) (*echo.Echo, error) {
 	e := NewEcho(cfg)
 
 	// Setup Dependencies
@@ -25,9 +27,12 @@ func Start(cfg *config.Configuration, db *gorm.DB) (*echo.Echo, error) {
 	userDao := daos.NewUserDao(db)
 	todoDao := daos.NewTodoDao(db)
 
+	// Cache
+	userCache := cache.NewUserCache(redis)
+
 	// Controllers
 	roleController := controller.NewRoleController(roleDao)
-	userController := controller.NewUserController(userDao)
+	userController := controller.NewUserController(userDao, userCache)
 	todoController := controller.NewTodoController(todoDao)
 
 	// Routes without JWT

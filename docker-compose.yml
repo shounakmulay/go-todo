@@ -10,7 +10,7 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
 
   redis:
-    image: redis:7.0
+    image: redis:6.2
     hostname: redis
     ports:
       - "6379:6379"
