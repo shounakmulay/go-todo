@@ -116,5 +116,4 @@ func Todo(g *echo.Group, controller controller.ITodoController) {
 
 		return json.Success(c, todoResults)
 	})
-
 }
