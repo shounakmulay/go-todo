@@ -1,7 +1,9 @@
 fail_fast: true
 repos:
-    - repo: https://github.com/tekwizely/pre-commit-golang
+    - repo: https://github.com/golangci/golangci-lint
       rev: master
       hooks:
           - id: golangci-lint
-            args: [--config=.golangci.yml, --fix]
+            args:
+                - "--fix"
+                - "--config=.golangci.yml"
