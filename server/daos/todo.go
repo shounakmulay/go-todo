@@ -17,12 +17,12 @@ func NewTodoDao(db *gorm.DB) *TodoDao {
 	}
 }
 
-func (t *TodoDao) CreateTodo(todo dbmodel.Todo) (int, error) {
+func (t TodoDao) CreateTodo(todo dbmodel.Todo) (int, error) {
 	result := t.db.Create(&todo)
 	return todo.ID, result.Error
 }
 
-func (t *TodoDao) UpdateTodo(todo dbmodel.Todo) error {
+func (t TodoDao) UpdateTodo(todo dbmodel.Todo) error {
 	result := t.db.Model(todo).Where(dbmodel.Todo{
 		ID:     todo.ID,
 		UserID: todo.UserID,
@@ -35,7 +35,7 @@ func (t *TodoDao) UpdateTodo(todo dbmodel.Todo) error {
 	return result.Error
 }
 
-func (t *TodoDao) GetTodo(id, userID int) (*dbmodel.Todo, error) {
+func (t TodoDao) GetTodo(id, userID int) (*dbmodel.Todo, error) {
 	todo := &dbmodel.Todo{
 		UserID: userID,
 	}
@@ -43,13 +43,13 @@ func (t *TodoDao) GetTodo(id, userID int) (*dbmodel.Todo, error) {
 	return todo, result.Error
 }
 
-func (t *TodoDao) GetAllTodos(userID int) (*[]dbmodel.Todo, error) {
+func (t TodoDao) GetAllTodos(userID int) (*[]dbmodel.Todo, error) {
 	todos := &[]dbmodel.Todo{}
 	result := t.db.Where(&dbmodel.Todo{UserID: userID}).Find(todos)
 	return todos, result.Error
 }
 
-func (t *TodoDao) GetAllTodosByState(done int8, userID int) (*[]dbmodel.Todo, error) {
+func (t TodoDao) GetAllTodosByState(done int8, userID int) (*[]dbmodel.Todo, error) {
 	if done != 1 && done != 0 {
 		return nil, errorutl.NewQueryError(`invalid value for "done". Should be either 0 or 1`)
 	}
@@ -58,7 +58,7 @@ func (t *TodoDao) GetAllTodosByState(done int8, userID int) (*[]dbmodel.Todo, er
 	return todos, result.Error
 }
 
-func (t *TodoDao) DeleteTodo(id int, userID int) error {
+func (t TodoDao) DeleteTodo(id int, userID int) error {
 	dbUser := dbmodel.Todo{
 		ID:     id,
 		UserID: userID,

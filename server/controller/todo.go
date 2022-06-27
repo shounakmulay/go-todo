@@ -16,7 +16,7 @@ func NewTodoController(todoDao daos.ITodoDao) *TodoController {
 		dao: todoDao,
 	}
 }
-func (t *TodoController) CreateTodo(todo reqmodel.CreateTodo, userID int) (*resmodel.CreateTodo, error) {
+func (t TodoController) CreateTodo(todo reqmodel.CreateTodo, userID int) (*resmodel.CreateTodo, error) {
 	dbTodo := dbmodel.Todo{
 		UserID:      userID,
 		Title:       todo.Title,
@@ -31,7 +31,7 @@ func (t *TodoController) CreateTodo(todo reqmodel.CreateTodo, userID int) (*resm
 	}, err
 }
 
-func (t *TodoController) UpdateTodo(todo reqmodel.UpdateTodo, userID int) error {
+func (t TodoController) UpdateTodo(todo reqmodel.UpdateTodo, userID int) error {
 	dbTodo := dbmodel.Todo{
 		ID:          todo.ID,
 		UserID:      userID,
@@ -43,7 +43,7 @@ func (t *TodoController) UpdateTodo(todo reqmodel.UpdateTodo, userID int) error 
 	return t.dao.UpdateTodo(dbTodo)
 }
 
-func (t *TodoController) GetTodo(id int, userID int) (*resmodel.Todo, error) {
+func (t TodoController) GetTodo(id int, userID int) (*resmodel.Todo, error) {
 	dbTodo, err := t.dao.GetTodo(id, userID)
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (t *TodoController) GetTodo(id int, userID int) (*resmodel.Todo, error) {
 	return resTodo, nil
 }
 
-func (t *TodoController) GetAllTodos(userID int) (*[]resmodel.Todo, error) {
+func (t TodoController) GetAllTodos(userID int) (*[]resmodel.Todo, error) {
 	todos, err := t.dao.GetAllTodos(userID)
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func (t *TodoController) GetAllTodos(userID int) (*[]resmodel.Todo, error) {
 	return getResTodos(todos), nil
 }
 
-func (t *TodoController) GetAllTodosByState(done int8, userID int) (*[]resmodel.Todo, error) {
+func (t TodoController) GetAllTodosByState(done int8, userID int) (*[]resmodel.Todo, error) {
 	todos, err := t.dao.GetAllTodosByState(done, userID)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (t *TodoController) GetAllTodosByState(done int8, userID int) (*[]resmodel.
 	return getResTodos(todos), nil
 }
 
-func (t *TodoController) DeleteTodo(id int, userID int) error {
+func (t TodoController) DeleteTodo(id int, userID int) error {
 	return t.dao.DeleteTodo(id, userID)
 }
 
