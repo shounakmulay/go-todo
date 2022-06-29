@@ -56,6 +56,7 @@ func startServer(cfg *config.Configuration, echoServer *echo.Echo) error {
 	// a timeout of 10 seconds.
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
+	// Waiting for interrupt signal
 	<-quit
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

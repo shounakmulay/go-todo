@@ -1,6 +1,8 @@
 package controller
 
 import (
+	errutl "go-todo/internal/error"
+	"go-todo/server/cache"
 	"go-todo/server/daos"
 	"go-todo/server/model/dbmodel"
 	"go-todo/server/model/reqmodel"
@@ -8,12 +10,14 @@ import (
 )
 
 type TodoController struct {
-	dao daos.ITodoDao
+	dao   daos.ITodoDao
+	cache cache.ITodoCache
 }
 
-func NewTodoController(todoDao daos.ITodoDao) *TodoController {
+func NewTodoController(todoDao daos.ITodoDao, todoCache cache.ITodoCache) *TodoController {
 	return &TodoController{
-		dao: todoDao,
+		dao:   todoDao,
+		cache: todoCache,
 	}
 }
 func (t TodoController) CreateTodo(todo reqmodel.CreateTodo, userID int) (*resmodel.CreateTodo, error) {
@@ -25,6 +29,8 @@ func (t TodoController) CreateTodo(todo reqmodel.CreateTodo, userID int) (*resmo
 		Done:        todo.Done,
 	}
 	todoID, err := t.dao.CreateTodo(dbTodo)
+
+	errutl.Log(t.cache.Invalidate(userID))
 
 	return &resmodel.CreateTodo{
 		ID: todoID,
@@ -40,6 +46,9 @@ func (t TodoController) UpdateTodo(todo reqmodel.UpdateTodo, userID int) error {
 		DueDate:     todo.DueDate,
 		Done:        todo.Done,
 	}
+
+	errutl.Log(t.cache.Invalidate(userID))
+
 	return t.dao.UpdateTodo(dbTodo)
 }
 
@@ -61,12 +70,19 @@ func (t TodoController) GetTodo(id int, userID int) (*resmodel.Todo, error) {
 }
 
 func (t TodoController) GetAllTodos(userID int) (*[]resmodel.Todo, error) {
+	cacheTodos, cacheErr := t.cache.GetAllTodos(userID)
+	if cacheErr == nil {
+		return &cacheTodos, nil
+	}
+
 	todos, err := t.dao.GetAllTodos(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	return getResTodos(todos), nil
+	resTodos := getResTodos(todos)
+	errutl.Log(t.cache.SetAllTodos(userID, *resTodos))
+	return resTodos, nil
 }
 
 func (t TodoController) GetAllTodosByState(done int8, userID int) (*[]resmodel.Todo, error) {
@@ -79,6 +95,7 @@ func (t TodoController) GetAllTodosByState(done int8, userID int) (*[]resmodel.T
 }
 
 func (t TodoController) DeleteTodo(id int, userID int) error {
+	errutl.Log(t.cache.Invalidate(userID))
 	return t.dao.DeleteTodo(id, userID)
 }
 

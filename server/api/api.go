@@ -29,11 +29,12 @@ func Start(cfg *config.Configuration, db *gorm.DB, redis *redis.Client) (*echo.E
 
 	// Cache
 	userCache := cache.NewUserCache(redis)
+	todoCache := cache.NewTodoCache(redis)
 
 	// Controllers
 	roleController := controller.NewRoleController(roleDao)
 	userController := controller.NewUserController(userDao, userCache)
-	todoController := controller.NewTodoController(todoDao)
+	todoController := controller.NewTodoController(todoDao, todoCache)
 
 	// Routes without JWT
 	routes.Auth(e, userController, jwtController)
