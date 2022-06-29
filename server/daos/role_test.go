@@ -16,7 +16,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type RoleTestSuite struct {
+type RoleDaoTestSuite struct {
 	suite.Suite
 	DB   *gorm.DB
 	mock sqlmock.Sqlmock
@@ -25,10 +25,10 @@ type RoleTestSuite struct {
 }
 
 func Test_RoleTestSuite(t *testing.T) {
-	suite.Run(t, new(RoleTestSuite))
+	suite.Run(t, new(RoleDaoTestSuite))
 }
 
-func (rs *RoleTestSuite) SetupTest() {
+func (rs *RoleDaoTestSuite) SetupTest() {
 	var (
 		db  *sql.DB
 		err error
@@ -48,11 +48,11 @@ func (rs *RoleTestSuite) SetupTest() {
 	rs.dao = daos.NewRoleDao(rs.DB)
 }
 
-func (rs *RoleTestSuite) AfterTest(_, _ string) {
+func (rs *RoleDaoTestSuite) AfterTest(_, _ string) {
 	require.NoError(rs.T(), rs.mock.ExpectationsWereMet())
 }
 
-func (rs *RoleTestSuite) Test_FindRoleByID_ReturnsDBRoleWhen() {
+func (rs *RoleDaoTestSuite) Test_FindRoleByID_ReturnsDBRoleWhen() {
 	dbTime := time.Now()
 
 	tests := []struct {
@@ -112,7 +112,7 @@ func (rs *RoleTestSuite) Test_FindRoleByID_ReturnsDBRoleWhen() {
 	}
 }
 
-func (rs *RoleTestSuite) Test_FindRoleByID_ReturnsErrorWhen() {
+func (rs *RoleDaoTestSuite) Test_FindRoleByID_ReturnsErrorWhen() {
 	tests := []struct {
 		name          string
 		modelID       int
