@@ -6,6 +6,7 @@ import (
 	"go-todo/server/controller"
 	"go-todo/server/daos"
 	"go-todo/server/middleware/jwt"
+	"go-todo/server/middleware/ratelimit"
 	"go-todo/server/routes"
 
 	"github.com/go-redis/redis/v8"
@@ -36,13 +37,18 @@ func Start(cfg *config.Configuration, db *gorm.DB, redis *redis.Client) (*echo.E
 	userController := controller.NewUserController(userDao, userCache)
 	todoController := controller.NewTodoController(todoDao, todoCache)
 
-	// Routes without JWT
-	routes.Auth(e, userController, jwtController)
+	// Auth Middlewares
+	authRateLimiter := ratelimit.AuthRateLimit(redis, cfg.Redis)
 
+	// Auth Routes
+	routes.Auth(e, userController, jwtController, authRateLimiter)
+
+	// API middlewares
 	jwtMiddleware := jwt.JWT(cfg.JWT, userController)
+
+	// API Routes
 	api := e.Group("/api", jwtMiddleware)
 
-	// Routes with JWT
 	routes.Role(api, roleController)
 	routes.User(api, userController)
 	routes.Todo(api, todoController)

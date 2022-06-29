@@ -18,8 +18,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Auth(e *echo.Echo, userController controller.IUserController, jwtController controller.IJwtController) {
-	auth := e.Group("/auth")
+func Auth(
+	e *echo.Echo,
+	userController controller.IUserController,
+	jwtController controller.IJwtController,
+	authRateLimiter echo.MiddlewareFunc,
+) {
+	auth := e.Group("/auth", authRateLimiter)
 
 	auth.POST("/login", func(c echo.Context) error {
 		reqLogin := &reqmodel.Login{}

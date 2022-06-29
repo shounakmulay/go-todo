@@ -46,8 +46,11 @@ func Load() (*Configuration, error) {
 			ContextKey:             JwtContextKey,
 		},
 		Redis: &Redis{
-			URL:  env.GetString("REDIS_URL"),
-			Port: env.GetString("REDIS_PORT"),
+			URL:                          env.GetString("REDIS_URL"),
+			Port:                         env.GetString("REDIS_PORT"),
+			AuthRateLimitCount:           env.GetInt("REDIS_AUTH_RATE_LIMIT_COUNT"),
+			AuthRateLimitDurationSeconds: env.GetInt("REDIS_AUTH_RATE_LIMIT_SECONDS"),
+			DisableRateLimit:             env.GetBool("REDIS_DISABLE_RATE_LIMIT"),
 		},
 	}
 
