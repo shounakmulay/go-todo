@@ -67,3 +67,11 @@ lint:
 .PHONY: pre-commit-setup
 pre-commit-setup:
 	./scripts/pre-commit-setup.sh
+
+.PHONY: build
+build:
+	go build -v -o ./ ./cmd/server/main.go  
+
+.PHONY: test
+test:
+	go test -coverprofile=coverage.out -race ./...
