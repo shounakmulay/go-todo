@@ -1,5 +1,7 @@
 ifeq ($(ENVIRONMENT_NAME),docker)
 	include .env.docker
+else ifeq($(ENVIRONMENT_NAME),develop)
+	include .env.develop
 else
 	include .env.local
 endif
