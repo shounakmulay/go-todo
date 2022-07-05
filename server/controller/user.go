@@ -74,6 +74,15 @@ func (u UserController) FindDBUserByUsername(username string) (dbmodel.User, err
 	return dbUser, nil
 }
 
+func (u UserController) FindDBUserByID(ID int) (dbmodel.User, error) {
+	dbUser, err := u.dao.FindUserByID(ID)
+	if err != nil {
+		return dbmodel.User{}, err
+	}
+
+	return dbUser, nil
+}
+
 func (u UserController) FindUser(id int) (resmodel.User, error) {
 	cacheUser, cacheErr := u.cache.GetUserByID(id)
 	if cacheErr == nil {

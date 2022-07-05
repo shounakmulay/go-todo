@@ -12,6 +12,7 @@ type IUserController interface {
 	UpdateUserToken(user *dbmodel.User) error
 	FindUserByUsername(username string) (resmodel.User, error)
 	FindDBUserByUsername(username string) (dbmodel.User, error)
+	FindDBUserByID(ID int) (dbmodel.User, error)
 	FindUser(id int) (resmodel.User, error)
 	DeleteUser(id int) error
 }

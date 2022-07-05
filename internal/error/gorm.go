@@ -25,6 +25,7 @@ func GormToResErr(err error, id any) *resmodel.ErrorResponse {
 		switch mysqlErr.Number {
 		// Error codes that need to passed to the user, i.e. client errors.
 		case 1062:
+		case 1452:
 			return resmodel.BadRequest(mysqlErr)
 		}
 	}

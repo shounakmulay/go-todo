@@ -76,6 +76,10 @@ local-services:
 	-f docker-compose.yml \
 	-f docker-compose.yml up db redis
 
+.PHONY: local-server
+local-server:
+	go run cmd/server/main.go
+
 .PHONY: format
 format:
 	gofmt -l -s -w .
