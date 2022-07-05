@@ -17,4 +17,5 @@ RUN mkdir ./build
 
 RUN go build -v -o ./build ./cmd/server/main.go
 
-CMD /wait && export ENVIRONMENT_NAME=develop && make migrate-up && ./build/main
+CMD export ENVIRONMENT_NAME=develop && go run cmd/migrate/main.go && ./build/main
+EXPOSE 9000

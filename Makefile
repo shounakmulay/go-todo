@@ -1,6 +1,6 @@
 ifeq ($(ENVIRONMENT_NAME),docker)
 	include .env.docker
-else ifeq($(ENVIRONMENT_NAME),develop)
+else ifeq ($(ENVIRONMENT_NAME),develop)
 	include .env.develop
 else
 	include .env.local
@@ -14,6 +14,10 @@ create-migration:
 .PHONY: migrate-up
 migrate-up:
 	migrate -path db/migration -database "mysql://$(DB_SQL_URL)" -verbose up $(VERSION)
+
+.PHONY: migrate-up-go
+migrate-up-go:
+	go run cmd/migrate/main.go
 
 .PHONY: migrate-down-all
 migrate-down-all:
@@ -45,6 +49,20 @@ local:
 	-f docker-compose.yml build
 
 	docker-compose --env-file ./.env.docker \
+	-f docker-compose.yml \
+	-f docker-compose.yml up
+
+.PHONY: develop
+develop:
+	docker-compose --env-file ./.env.develop \
+    	-f docker-compose.yml \
+    	-f docker-compose.yml down
+
+	docker-compose --env-file ./.env.develop \
+	-f docker-compose.yml \
+	-f docker-compose.yml build
+
+	docker-compose --env-file ./.env.develop \
 	-f docker-compose.yml \
 	-f docker-compose.yml up
 

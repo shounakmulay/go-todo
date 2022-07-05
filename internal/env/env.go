@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 
 	"go-todo/internal/convert"
 	errorutl "go-todo/internal/error"
@@ -74,7 +75,7 @@ func Load() {
 			Host     string `json:"host"`
 			DBName   string `json:"dbname"`
 			Password string `json:"password"`
-			Port     string `json:"port"`
+			Port     int    `json:"port"`
 		}
 		secrets := &copilotSecrets{}
 		errorutl.Fatal(json.Unmarshal([]byte(os.Getenv("SHGOTODOSERVICECLUSTER_SECRET")), secrets))
@@ -82,7 +83,7 @@ func Load() {
 		os.Setenv(
 			"DB_SQL_URL",
 			fmt.Sprintf(
-				"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+				"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 				secrets.Username,
 				secrets.Password,
 				secrets.Host,
@@ -90,9 +91,16 @@ func Load() {
 				secrets.DBName,
 			))
 		os.Setenv("DB_NAME", secrets.DBName)
-		os.Setenv("DB_PORT", secrets.Port)
+		os.Setenv("DB_PORT", strconv.Itoa(secrets.Port))
 		os.Setenv("DB_HOST", secrets.Host)
 		os.Setenv("DB_USER", secrets.Username)
 		os.Setenv("DB_PASS", secrets.Password)
+
+		redisURL := os.Getenv("SH_GO_TODO_REDIS_ENDPOINT")
+		redisPort, err := strconv.Atoi(os.Getenv("REDIS_PORT"))
+		if err != nil {
+			redisPort = 6379
+		}
+		os.Setenv("REDIS_URL", fmt.Sprintf("%s:%d", redisURL, redisPort))
 	}
 }
