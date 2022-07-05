@@ -48,7 +48,7 @@ func startServer(cfg *config.Configuration, echoServer *echo.Echo) error {
 		log.Logger.Infof("Starting server at %v", env.GetInt("SERVER_PORT"))
 
 		if err := echoServer.StartServer(httpServer); err != nil {
-			log.Logger.Info("Shutting down the server")
+			log.Logger.Fatal("Shutting down the server")
 		}
 	}()
 
