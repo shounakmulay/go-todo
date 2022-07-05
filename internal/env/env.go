@@ -1,8 +1,10 @@
 package env
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 
 	"go-todo/internal/convert"
 	errorutl "go-todo/internal/error"
@@ -66,4 +68,39 @@ func Load() {
 	errorutl.Fatal(
 		godotenv.Load(fmt.Sprintf(".env.%s", env)),
 	)
+
+	if env == "develop" {
+		type copilotSecrets struct {
+			Username string `json:"username"`
+			Host     string `json:"host"`
+			DBName   string `json:"dbname"`
+			Password string `json:"password"`
+			Port     int    `json:"port"`
+		}
+		secrets := &copilotSecrets{}
+		errorutl.Fatal(json.Unmarshal([]byte(os.Getenv("SHGOTODOSERVICECLUSTER_SECRET")), secrets))
+
+		os.Setenv(
+			"DB_SQL_URL",
+			fmt.Sprintf(
+				"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+				secrets.Username,
+				secrets.Password,
+				secrets.Host,
+				secrets.Port,
+				secrets.DBName,
+			))
+		os.Setenv("DB_NAME", secrets.DBName)
+		os.Setenv("DB_PORT", strconv.Itoa(secrets.Port))
+		os.Setenv("DB_HOST", secrets.Host)
+		os.Setenv("DB_USER", secrets.Username)
+		os.Setenv("DB_PASS", secrets.Password)
+
+		redisURL := os.Getenv("SH_GO_TODO_REDIS_ENDPOINT")
+		redisPort, err := strconv.Atoi(os.Getenv("REDIS_PORT"))
+		if err != nil {
+			redisPort = 6379
+		}
+		os.Setenv("REDIS_URL", fmt.Sprintf("%s:%d", redisURL, redisPort))
+	}
 }

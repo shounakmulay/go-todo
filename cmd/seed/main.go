@@ -21,8 +21,9 @@ func main() {
 	dsn := os.Getenv("DB_SQL_URL")
 
 	safeEnvs := map[string]bool{
-		"local":  true,
-		"docker": true,
+		"local":   true,
+		"docker":  true,
+		"develop": true,
 	}
 
 	environment := env.GetString("ENVIRONMENT_NAME")
