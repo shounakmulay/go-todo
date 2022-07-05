@@ -26,6 +26,31 @@ func Auth(
 ) {
 	auth := e.Group("/auth", authRateLimiter)
 
+	auth.POST("/signup", func(c echo.Context) error {
+		reqUser := &reqmodel.CreateUser{}
+		bindValErr := validator.BindAndValidateWith(c, reqUser, validator.BindBody)
+		if bindValErr != nil {
+			return json.Error(c, bindValErr)
+		}
+
+		userID, err := userController.CreateUser(*reqUser)
+		if err != nil {
+			return json.Error(c, errorutl.GormToResErr(err, reqUser.Username))
+		}
+
+		dbUser, err := userController.FindDBUserByID(userID)
+		if err != nil {
+			return json.Error(c, errorutl.GormToResErr(err, userID))
+		}
+
+		jwtTokens, jwtError := generateTokensAndUpdateUser(c, dbUser, userController, jwtController)
+		if jwtError != nil {
+			return json.Error(c, jwtError)
+		}
+
+		return json.Success(c, jwtTokens)
+	})
+
 	auth.POST("/login", func(c echo.Context) error {
 		reqLogin := &reqmodel.Login{}
 		bindValErr := validator.BindAndValidateWith(c, reqLogin, validator.BindBody)
